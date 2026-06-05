@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.env
+
+# Config con chiavi reali — MAI committare
+config/providers.toml
+
+# File IPC temporanei di REAPER bridge
+/tmp/harvest_*.json
+
+# IDE
+.vscode/
+.idea/
+*.swp

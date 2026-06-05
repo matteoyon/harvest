@@ -1,0 +1,27 @@
+# providers.toml — copia questo file in providers.toml e inserisci le tue chiavi
+# providers.toml è in .gitignore, questo file example è committato
+
+[default]
+provider = "anthropic"   # provider attivo al lancio
+
+[providers.anthropic]
+model    = "claude-sonnet-4-5"
+api_key  = "sk-ant-..."     # oppure lascia vuoto e usa ANTHROPIC_API_KEY env
+
+[providers.openai]
+model    = "gpt-4o-mini"
+api_key  = "sk-..."         # oppure usa OPENAI_API_KEY env
+
+[providers.groq]
+model    = "llama-3.3-70b-versatile"
+api_key  = "gsk_..."        # oppure usa GROQ_API_KEY env
+
+[providers.ollama]
+model    = "ollama/qwen2.5:7b"   # qualsiasi modello con tool calling installato
+api_base = "http://localhost:11434"
+api_key  = "ollama"              # placeholder richiesto da LiteLLM
+
+[providers.llamacpp]
+model    = "openai/local-model"  # nome arbitrario, serve solo a LiteLLM
+api_base = "http://localhost:8080/v1"
+api_key  = "local"
