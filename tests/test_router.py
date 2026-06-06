@@ -310,3 +310,29 @@ class TestLLMRouter:
             calls = mock_completion.call_args_list
             assert calls[0][1]["model"] == "claude-sonnet-4-5"
             assert calls[1][1]["model"] == "gpt-4o-mini"
+
+    @pytest.mark.asyncio
+    async def test_tool_call_missing_id_gets_uuid(self, app_config):
+        """Tool calls with missing/empty id should receive a generated uuid."""
+        router = LLMRouter(app_config)
+
+        mock_tool_call = MagicMock()
+        mock_tool_call.id = None  # local models may omit this
+        mock_tool_call.function = MagicMock()
+        mock_tool_call.function.name = "play"
+        mock_tool_call.function.arguments = "{}"
+
+        mock_response = MagicMock()
+        mock_response.choices = [MagicMock()]
+        mock_response.choices[0].message = MagicMock()
+        mock_response.choices[0].message.content = None
+        mock_response.choices[0].message.tool_calls = [mock_tool_call]
+
+        with patch("litellm.acompletion", new_callable=AsyncMock) as mock_completion:
+            mock_completion.return_value = mock_response
+            result = await router.chat([{"role": "user", "content": "Play"}])
+
+        assert result.tool_calls is not None
+        tc = result.tool_calls[0]
+        assert tc.id  # must be non-empty
+        assert len(tc.id) == 36  # uuid4 format

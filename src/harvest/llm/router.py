@@ -2,6 +2,7 @@
 
 import logging
 import time
+import uuid
 from dataclasses import dataclass
 from typing import Any, Optional
 
@@ -111,13 +112,15 @@ class LLMRouter:
             **kwargs,
         }
 
-        # Add api_base if configured
         if provider_config.api_base:
             litellm_kwargs["api_base"] = provider_config.api_base
 
-        # Add tools if provided
         if tools:
             litellm_kwargs["tools"] = tools
+
+        # Extra fields merged directly into the request body (e.g. {think: false} for Qwen3)
+        if provider_config.extra_body:
+            litellm_kwargs["extra_body"] = provider_config.extra_body
 
         # Try request with one retry
         max_attempts = 2
@@ -159,9 +162,10 @@ class LLMRouter:
                                 logger.warning(f"Failed to parse tool arguments: {args_str}")
                                 args_dict = {"raw": args_str}
 
+                            tc_id = (tc.id if hasattr(tc, "id") and tc.id else None) or str(uuid.uuid4())
                             tool_calls.append(
                                 ToolCall(
-                                    id=tc.id if hasattr(tc, "id") else "unknown",
+                                    id=tc_id,
                                     name=tc.function.name,
                                     arguments=args_dict,
                                 )

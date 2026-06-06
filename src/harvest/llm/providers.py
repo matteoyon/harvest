@@ -3,7 +3,7 @@
 import os
 import tomllib
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -17,6 +17,11 @@ class ProviderConfig(BaseModel):
     )
     api_base: Optional[str] = Field(default=None, description="Base URL for API calls")
     timeout: int = Field(default=300, description="Request timeout in seconds", ge=1, le=600)
+    extra_body: Optional[dict[str, Any]] = Field(
+        default=None,
+        description="Extra fields merged into the raw API request body. "
+                    "Use {think = false} to disable Qwen3 thinking mode.",
+    )
 
     @field_validator("api_key", mode="after")
     @classmethod

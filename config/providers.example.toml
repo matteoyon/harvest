@@ -17,9 +17,16 @@ model    = "llama-3.3-70b-versatile"
 api_key  = "gsk_..."        # oppure usa GROQ_API_KEY env
 
 [providers.ollama]
-model    = "ollama/qwen2.5:7b"   # qualsiasi modello con tool calling installato
+model    = "ollama/gemma3:4b"    # gemma3:4b (~3.3GB) — tool calling affidabile
 api_base = "http://localhost:11434"
 api_key  = "ollama"              # placeholder richiesto da LiteLLM
+
+# Qwen3 (modello "pensante"): disabilita thinking mode altrimenti torna risposte vuote
+# [providers.ollama]
+# model      = "ollama/qwen3:4b"
+# api_base   = "http://localhost:11434"
+# api_key    = "ollama"
+# extra_body = {think = false}
 
 [providers.llamacpp]
 model    = "openai/local-model"  # nome arbitrario, serve solo a LiteLLM
